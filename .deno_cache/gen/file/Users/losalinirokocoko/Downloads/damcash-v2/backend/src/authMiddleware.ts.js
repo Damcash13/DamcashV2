@@ -1,0 +1,26 @@
+import { authService } from './authService.ts';
+/**
+ * Middleware to verify JWT token and extract user
+ */ export async function authMiddleware(req) {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  const token = authHeader.substring(7);
+  try {
+    const user = await authService.verifyToken(token);
+    return user;
+  } catch (error) {
+    return null;
+  }
+}
+/**
+ * Require authentication - throws error if not authenticated
+ */ export function requireAuth(user) {
+  if (!user) {
+    throw new Error('Unauthorized - Authentication required');
+  }
+  return user;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZpbGU6Ly8vVXNlcnMvbG9zYWxpbmlyb2tvY29rby9Eb3dubG9hZHMvZGFtY2FzaC12Mi9iYWNrZW5kL3NyYy9hdXRoTWlkZGxld2FyZS50cyJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBhdXRoU2VydmljZSwgVXNlciB9IGZyb20gJy4vYXV0aFNlcnZpY2UudHMnXG5cbi8qKlxuICogTWlkZGxld2FyZSB0byB2ZXJpZnkgSldUIHRva2VuIGFuZCBleHRyYWN0IHVzZXJcbiAqL1xuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGF1dGhNaWRkbGV3YXJlKHJlcTogUmVxdWVzdCk6IFByb21pc2U8VXNlciB8IG51bGw+IHtcbiAgICBjb25zdCBhdXRoSGVhZGVyID0gcmVxLmhlYWRlcnMuZ2V0KCdBdXRob3JpemF0aW9uJylcblxuICAgIGlmICghYXV0aEhlYWRlciB8fCAhYXV0aEhlYWRlci5zdGFydHNXaXRoKCdCZWFyZXIgJykpIHtcbiAgICAgICAgcmV0dXJuIG51bGxcbiAgICB9XG5cbiAgICBjb25zdCB0b2tlbiA9IGF1dGhIZWFkZXIuc3Vic3RyaW5nKDcpXG5cbiAgICB0cnkge1xuICAgICAgICBjb25zdCB1c2VyID0gYXdhaXQgYXV0aFNlcnZpY2UudmVyaWZ5VG9rZW4odG9rZW4pXG4gICAgICAgIHJldHVybiB1c2VyXG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgICAgcmV0dXJuIG51bGxcbiAgICB9XG59XG5cbi8qKlxuICogUmVxdWlyZSBhdXRoZW50aWNhdGlvbiAtIHRocm93cyBlcnJvciBpZiBub3QgYXV0aGVudGljYXRlZFxuICovXG5leHBvcnQgZnVuY3Rpb24gcmVxdWlyZUF1dGgodXNlcjogVXNlciB8IG51bGwpOiBVc2VyIHtcbiAgICBpZiAoIXVzZXIpIHtcbiAgICAgICAgdGhyb3cgbmV3IEVycm9yKCdVbmF1dGhvcml6ZWQgLSBBdXRoZW50aWNhdGlvbiByZXF1aXJlZCcpXG4gICAgfVxuICAgIHJldHVybiB1c2VyXG59XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsU0FBUyxXQUFXLFFBQWMsbUJBQWtCO0FBRXBEOztDQUVDLEdBQ0QsT0FBTyxlQUFlLGVBQWUsR0FBWTtFQUM3QyxNQUFNLGFBQWEsSUFBSSxPQUFPLENBQUMsR0FBRyxDQUFDO0VBRW5DLElBQUksQ0FBQyxjQUFjLENBQUMsV0FBVyxVQUFVLENBQUMsWUFBWTtJQUNsRCxPQUFPO0VBQ1g7RUFFQSxNQUFNLFFBQVEsV0FBVyxTQUFTLENBQUM7RUFFbkMsSUFBSTtJQUNBLE1BQU0sT0FBTyxNQUFNLFlBQVksV0FBVyxDQUFDO0lBQzNDLE9BQU87RUFDWCxFQUFFLE9BQU8sT0FBTztJQUNaLE9BQU87RUFDWDtBQUNKO0FBRUE7O0NBRUMsR0FDRCxPQUFPLFNBQVMsWUFBWSxJQUFpQjtFQUN6QyxJQUFJLENBQUMsTUFBTTtJQUNQLE1BQU0sSUFBSSxNQUFNO0VBQ3BCO0VBQ0EsT0FBTztBQUNYIn0=
+// denoCacheMetadata=1846426237329830723,12938437555370201960

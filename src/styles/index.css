@@ -1,0 +1,523 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== ROOT VARIABLES ===== */
+:root {
+  /* Checkers Theme (Premium Dark Brown) */
+  --bg-primary: #2C1810;
+  --bg-secondary: #3E2723;
+  --bg-card: #3E2723;
+  --text-primary: #EFEBE9;
+  --text-secondary: #BCAAA4;
+  --accent: #FFD700;
+  --accent-hover: #FFC107;
+
+  /* Board Colors */
+  --board-light: #f0d9b5;
+  /* Keep classic wood look */
+  --board-dark: #b58863;
+  --board-highlight: rgba(255, 215, 0, 0.5);
+  --board-valid: rgba(255, 215, 0, 0.4);
+  --board-capture: rgba(239, 68, 68, 0.4);
+}
+
+[data-theme="chess"] {
+  /* Chess Theme (Lichess Dark) */
+  --bg-primary: #161512;
+  --bg-secondary: #262421;
+  --bg-card: #262421;
+  --text-primary: #bababa;
+  --text-secondary: #6b6b6b;
+  --accent: #3692e7;
+  --accent-hover: #2d7cc4;
+
+  /* Board Colors */
+  --board-light: #f0d9b5;
+  --board-dark: #b58863;
+  --board-highlight: rgba(54, 146, 231, 0.5);
+  --board-valid: rgba(54, 146, 231, 0.4);
+  --board-capture: rgba(239, 68, 68, 0.4);
+}
+
+/* ===== BASE STYLES ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Lora', serif;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="chess"] body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
+
+/* ===== SELECTION ===== */
+::selection {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+/* ===== GAME BOARD STYLES ===== */
+@layer components {
+
+  /* Board Container */
+  .board-container {
+    @apply relative w-full aspect-square mx-auto;
+    perspective: 1000px;
+  }
+
+  .board {
+    @apply absolute inset-0 grid gap-0 rounded-lg overflow-hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4),
+      inset 0 0 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .board-10x10 {
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+  }
+
+  .board-8x8 {
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+  }
+
+  /* Board Cells */
+  .cell {
+    @apply relative flex items-center justify-center aspect-square;
+    transition: background-color 0.15s ease;
+  }
+
+  .cell-light {
+    background-color: var(--board-light);
+  }
+
+  .cell-dark {
+    background-color: var(--board-dark);
+  }
+
+  .cell-highlight {
+    background-color: var(--board-highlight) !important;
+  }
+
+  .cell-valid {
+    @apply cursor-pointer;
+  }
+
+  .cell-valid::after {
+    content: '';
+    @apply absolute w-1/3 h-1/3 rounded-full;
+    background: var(--board-valid);
+  }
+
+  .cell-capture::after {
+    content: '';
+    @apply absolute inset-1 rounded-full border-4;
+    border-color: var(--board-capture);
+    background: transparent;
+  }
+
+  /* Checker Pieces - 3D Cylinder Look */
+  .checker-piece {
+    @apply w-[85%] h-[85%] rounded-full relative cursor-pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .checker-piece:hover {
+    transform: scale(1.05);
+  }
+
+  .checker-piece-white {
+    background: radial-gradient(circle at 35% 25%, #ffffff 5%, #e6e6e6 30%, #b0b0b0 90%);
+    box-shadow:
+      0 5px 8px rgba(0, 0, 0, 0.5),
+      /* Drop shadow */
+      inset 0 -4px 2px rgba(0, 0, 0, 0.2),
+      /* Bottom shade */
+      inset 0 2px 5px rgba(255, 255, 255, 1);
+    /* Top highlight */
+    border: 1px solid #999;
+  }
+
+  .checker-piece-black {
+    background: radial-gradient(circle at 35% 25%, #444444 5%, #1a1a1a 30%, #000000 90%);
+    box-shadow:
+      0 5px 8px rgba(0, 0, 0, 0.6),
+      /* Drop shadow */
+      inset 0 -4px 2px rgba(0, 0, 0, 0.5),
+      /* Bottom shade */
+      inset 0 2px 5px rgba(255, 255, 255, 0.2);
+    /* Top highlight */
+    border: 1px solid #111;
+  }
+
+  .checker-piece-king::before {
+    content: '';
+    /* King represented by double-stack effect or crown icon if preferred, keeping icon for clarity but adding visual stack */
+    @apply absolute inset-0 rounded-full border-4 border-white/20;
+  }
+
+  .checker-piece-king::after {
+    content: '♔';
+    @apply absolute inset-0 flex items-center justify-center text-3xl font-bold;
+    color: var(--accent);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+
+  .checker-piece-selected {
+    box-shadow: 0 0 15px var(--accent), 0 5px 15px rgba(0, 0, 0, 0.5);
+    transform: scale(1.15);
+    z-index: 10;
+  }
+
+  /* Chess Pieces - Simple text for now, assuming SVG replacement later if needed */
+  .chess-piece {
+    @apply w-full h-full flex items-center justify-center text-6xl cursor-pointer select-none leading-none pb-2;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+    transition: transform 0.1s ease;
+  }
+
+  .chess-pawn {
+    @apply text-5xl opacity-90;
+  }
+
+  .chess-piece:hover {
+    transform: scale(1.1);
+  }
+
+  .chess-piece-white {
+    color: #fff;
+    -webkit-text-stroke: 1.5px #000;
+    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .chess-piece-black {
+    color: #000;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+  }
+
+  /* Cards */
+  .game-card {
+    @apply rounded-xl p-4 transition-all duration-300;
+    background: var(--bg-card);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Buttons */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+    @apply flex items-center justify-center gap-2;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    color: var(--bg-primary);
+    box-shadow: 0 4px 15px rgba(var(--accent), 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--accent), 0.4);
+  }
+
+  .btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--accent);
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+  }
+
+  .btn-ghost:hover {
+    color: var(--accent);
+    background: rgba(var(--accent), 0.1);
+  }
+
+  /* Input Fields */
+  .input {
+    @apply w-full px-4 py-3 rounded-lg outline-none transition-all duration-200;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    color: var(--text-primary);
+  }
+
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent), 0.2);
+  }
+
+  .input::placeholder {
+    color: var(--text-secondary);
+  }
+
+  /* Timer */
+  .timer {
+    @apply px-4 py-2 rounded-lg font-mono text-xl font-bold;
+    background: var(--bg-secondary);
+  }
+
+  .timer-active {
+    background: var(--accent);
+    color: var(--bg-primary);
+    animation: pulse 1s infinite;
+  }
+
+  .timer-low {
+    background: #ef4444;
+    color: white;
+    animation: pulse 0.5s infinite;
+  }
+
+  /* Avatar */
+  .avatar {
+    @apply rounded-full overflow-hidden bg-gray-600;
+    border: 2px solid var(--accent);
+  }
+
+  .avatar img {
+    @apply w-full h-full object-cover;
+  }
+
+  /* Tier Badge */
+  .tier-badge {
+    @apply px-2 py-1 rounded text-xs font-bold uppercase;
+  }
+
+  .tier-bronze {
+    @apply bg-amber-700 text-amber-100;
+  }
+
+  .tier-silver {
+    @apply bg-gray-400 text-gray-900;
+  }
+
+  .tier-gold {
+    @apply bg-yellow-500 text-yellow-900;
+  }
+
+  .tier-platinum {
+    @apply bg-cyan-400 text-cyan-900;
+  }
+
+  .tier-diamond {
+    @apply bg-blue-400 text-blue-900;
+  }
+
+  .tier-master {
+    @apply bg-purple-500 text-purple-100;
+  }
+
+  .tier-grandmaster {
+    @apply bg-red-600 text-red-100;
+  }
+
+  /* Toast Notifications */
+  .toast {
+    @apply fixed bottom-4 right-4 p-4 rounded-lg shadow-lg z-50;
+    @apply animate-slide-up;
+    background: var(--bg-card);
+    border-left: 4px solid var(--accent);
+  }
+
+  .toast-success {
+    border-left-color: #22c55e;
+  }
+
+  .toast-error {
+    border-left-color: #ef4444;
+  }
+
+  .toast-warning {
+    border-left-color: #f59e0b;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-40;
+    @apply flex items-center justify-center p-4;
+  }
+
+  .modal {
+    @apply rounded-2xl p-6 max-w-md w-full;
+    @apply animate-bounce-in;
+    background: var(--bg-card);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Navigation */
+  .nav-item {
+    @apply flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200;
+    color: var(--text-secondary);
+  }
+
+  .nav-item:hover,
+  .nav-item.active {
+    color: var(--accent);
+    background: rgba(var(--accent), 0.1);
+  }
+
+  /* ELO Display */
+  .elo-display {
+    @apply flex items-center gap-2 font-mono font-bold;
+  }
+
+  .elo-change-positive {
+    @apply text-green-500;
+  }
+
+  .elo-change-negative {
+    @apply text-red-500;
+  }
+
+  /* Game Status Indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-online {
+    @apply bg-green-500;
+  }
+
+  .status-playing {
+    @apply bg-yellow-500 animate-pulse;
+  }
+
+  .status-offline {
+    @apply bg-gray-500;
+  }
+
+  /* Move History */
+  .move-list {
+    @apply grid grid-cols-3 gap-1 text-sm font-mono;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .move-number {
+    @apply text-right pr-2;
+    color: var(--text-secondary);
+  }
+
+  .move-notation {
+    @apply px-2 py-1 rounded cursor-pointer transition-colors;
+  }
+
+  .move-notation:hover {
+    background: var(--bg-secondary);
+  }
+
+  .move-notation.current {
+    background: var(--accent);
+    color: var(--bg-primary);
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes piece-drop {
+  0% {
+    transform: translateY(-100px) scale(1.2);
+    opacity: 0;
+  }
+
+  60% {
+    transform: translateY(10px) scale(0.95);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.piece-entering {
+  animation: piece-drop 0.4s ease-out;
+}
+
+@keyframes capture-flash {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.piece-captured {
+  animation: capture-flash 0.3s ease-out forwards;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .chess-piece {
+    @apply text-3xl;
+  }
+
+  .chess-pawn {
+    @apply text-2xl;
+  }
+
+  .checker-piece-king::before {
+    @apply text-lg;
+  }
+}
+
+@media (max-width: 480px) {
+  .chess-piece {
+    @apply text-2xl;
+  }
+
+  .chess-pawn {
+    @apply text-xl;
+  }
+
+  .checker-piece-king::before {
+    @apply text-base;
+  }
+}

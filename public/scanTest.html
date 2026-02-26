@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan AI Test</title>
+</head>
+<body>
+  <h1>Testing Web Worker</h1>
+  <script>
+    console.log("Starting script");
+    try {
+      const worker = new Worker('/scan/scan_normal.js');
+      worker.onmessage = (e) => {
+        console.log('[Worker Msg]:', e.data);
+      };
+      worker.onerror = (e) => {
+        console.error('[Worker Error]:', Object.keys(e).join(', '));
+      };
+      
+      console.log("Sending hub command");
+      worker.postMessage('hub');
+      
+      setTimeout(() => {
+        worker.postMessage('position fen B:B30,23,19:W38,40,32,27');
+        worker.postMessage('go depth 2');
+      }, 1000);
+      
+    } catch (e) {
+      console.error(e);
+    }
+  </script>
+</body>
+</html>

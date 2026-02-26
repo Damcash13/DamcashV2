@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+dist/
+.cache/
+
+# Environment files — NEVER commit these
+.env
+.env.local
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Keep the template (no real secrets)
+!.env.production.template
+
+# Build output
+dist/
+build/
+
+# Deno cache
+backend/.deno/
+
+# OS/Editor
+.DS_Store
+.vscode/settings.json
+*.swp
+*.swo
+
+# Logs
+npm-debug.log*
+*.log
+
+# Prisma
+backend/prisma/migrations/
