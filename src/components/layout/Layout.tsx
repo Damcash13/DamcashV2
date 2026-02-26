@@ -333,10 +333,10 @@ export default function Layout({ children }: LayoutProps) {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 pt-16 lg:pt-0 pb-20 lg:pb-0 min-h-[100dvh] overflow-auto"
+      <main className="flex-1 lg:ml-64 pt-16 lg:pt-0 pb-20 lg:pb-0 min-h-[100dvh] overflow-x-hidden overflow-y-auto"
         style={{ background: 'var(--bg-primary)' }}
       >
-        <div className="p-4 lg:p-6">
+        <div className="p-4 lg:p-6 w-full max-w-full overflow-x-hidden">
           {children}
         </div>
       </main>

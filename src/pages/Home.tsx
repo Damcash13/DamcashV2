@@ -313,19 +313,19 @@ export default function Home() {
     <div className="min-h-full pb-20 md:pb-0 px-4 md:px-0 max-w-7xl mx-auto pt-8">
 
       {/* Top Bar Stats */}
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center justify-center gap-4 mt-3">
-          <span className={`px-3 py-1 rounded-full text-sm ${themeColors.card} border ${themeColors.border} ${themeColors.text}`}>
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-3">
+          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${themeColors.card} border ${themeColors.border} ${themeColors.text}`}>
             ELO: {gameType === 'checkers' ? user?.eloCheckers : user?.eloChess}
           </span>
-          <span className={`px-3 py-1 rounded-full text-sm font-bold bg-green-500/10 text-green-500 border border-green-500/20`}>
+          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-green-500/10 text-green-500 border border-green-500/20`}>
             Daily: +{user?.dailyScore || 0}
           </span>
-          <span className={`px-3 py-1 rounded-full text-sm font-semibold`} style={{ backgroundColor: themeColors.accent, color: '#000000' }}>
+          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap`} style={{ backgroundColor: themeColors.accent, color: '#000000' }}>
             {onlineUsers.length + 1} joueurs en ligne
           </span>
         </div>
-        <div className="flex items-center gap-6 text-sm font-mono">
+        <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm font-mono">
           <span className={themeColors.textMuted}>
             <span className="font-bold text-green-500 mr-1">{onlineUsers.length + 143}</span>
             {t('home.players')}
